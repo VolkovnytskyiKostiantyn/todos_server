@@ -5,12 +5,11 @@ import { createServer } from 'http'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 import jwt from 'express-jwt'
-// import indexRouter from './routes/index'
-import userRouter from './routes/user'
-import todosRouter from './routes/todos'
-import mongo from './db/Mongo'
 
-async function boot() {
+import mongo from './db/Mongo'
+import { combineRouters } from './routes/index'
+
+export async function boot() {
   await mongo.connect()
 
   const app = express()
@@ -29,12 +28,14 @@ async function boot() {
   app.use(cookieParser())
   app.use(express.static(path.join(__dirname, '../public')))
   app.use(jwt({ secret: 'salt' }).unless({ path: ['/user/signUp', '/user/login'] }))
-  app.use('/user', userRouter)
-  app.use('/todos', todosRouter)
 
-  app.listen(3011, () => {
-    console.log(`started localhost:3011`);
+  combineRouters(app)
+
+  app.listen(3010, () => {
+    console.log(`started localhost:3010`);
   })
 }
 
-boot()
+if (process.env.NODE_ENV !== 'test') {
+  boot()
+}

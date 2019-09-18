@@ -15,6 +15,7 @@ todosRouter.get('/all/:login', async (req: $Request, res: $Response): Promise<vo
     const todos = await mongo.getCollection('todos').find({ $or: queryArray }).toArray()
     res.send(todos)
   } catch (e) {
+    res.sendStatus(404)
     console.error(e)
   }
 })
@@ -26,6 +27,7 @@ todosRouter.get(
       const todos = await mongo.getCollection('todos').find({ owner: req.params.choosenUser }).toArray()
       res.send(todos)
     } catch (e) {
+      res.sendStatus(404)
       console.error(e)
     }
   },
@@ -46,6 +48,7 @@ todosRouter.post('/', async (req: $Request, res: $Response): Promise<void> => {
     console.log('response: ', response.insertedId);
     res.send(response.insertedId)
   } catch (e) {
+    res.sendStatus(404)
     console.error(e)
   }
 })
@@ -58,6 +61,7 @@ todosRouter.delete(
       const response = await mongo.getCollection('todos').deleteOne({ _id: ObjectID(_id) })
       res.send(response)
     } catch (e) {
+      res.sendStatus(404)
       console.error(e)
     }
   },
@@ -72,6 +76,7 @@ todosRouter.delete(
       const response = await mongo.getCollection('todos').deleteMany({ $or: query })
       res.send(response)
     } catch (e) {
+      res.sendStatus(404)
       console.error(e)
     }
   },
@@ -86,6 +91,7 @@ todosRouter.put('/', async (req: $Request, res: $Response): Promise<void> => {
     console.log('id', response)
     res.send(response)
   } catch (e) {
+    res.sendStatus(404)
     console.error(e)
   }
 })
